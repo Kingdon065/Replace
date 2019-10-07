@@ -9,7 +9,7 @@ from Color.color import Colored
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
 
-class replace_string:
+class Replace_string:
     def __init__(self, args):
         self.args = args
         self.color = Colored()
@@ -17,7 +17,7 @@ class replace_string:
             log.info('[{}] no exists.'.format(self.args.root))
             sys.exit()
 
-        self.encoding = check_encoding(self.args.root)
+        self.encoding = file_encoding(self.args.root)   # 此处若使用check_encoding()，则返回的文件编码不是GBK，从而导致后面中文乱码
         self.lines = []
 
     def openFile(self):
@@ -29,6 +29,10 @@ class replace_string:
             sys.exit()
 
     def saveFile(self, filename):
+        zh_pattern = re.compile(u'[\u4e00-\u9fa5]+')  # 判断目标字符串是否为中文
+        mo = zh_pattern.search(self.args.object)
+        if mo:
+            self.encoding = 'GBK'   # 如果目标字符串为中文，将编码设置为GBK
         f = open(filename, 'w', encoding=self.encoding)
         for line in self.lines:
             f.write(line)
@@ -123,11 +127,11 @@ def run():
             for filename in filenames:
                 if os.path.splitext(filename)[1][1:] in args.exts:
                     args.root = os.path.join(folder, filename)
-                    rps = replace_string(args)
+                    rps = Replace_string(args)
                     rps.replace()
         return
     # 处理单文件
-    rs = replace_string(args)
+    rs = Replace_string(args)
     rs.replace()
 
 if __name__ == '__main__':
