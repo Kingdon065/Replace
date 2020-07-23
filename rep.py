@@ -1,4 +1,4 @@
-#!python3
+#! python3
 
 import sys, re, os
 import argparse, logging
@@ -78,7 +78,7 @@ class Replace_string:
 
 def run():
     parser = argparse.ArgumentParser(
-        prog='replace2',
+        prog='rep',
         description='Replace text in a file, then save this file.',
         epilog="replace in multiple files, it's best to put the files you want to replace in the same folder"
     )
